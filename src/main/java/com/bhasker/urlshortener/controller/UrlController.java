@@ -5,8 +5,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000") 
 public class UrlController {
 
     private final UrlService service;
@@ -15,12 +18,18 @@ public class UrlController {
         this.service = service;
     }
 
-    @PostMapping("/shorten")
-    public ResponseEntity<String> shorten(@RequestParam String url) {
-        String shortCode = service.shortenUrl(url);
-        return ResponseEntity.ok("http://localhost:8080/" + shortCode);
-    }
+  @PostMapping("/shorten")
+public ResponseEntity<Map<String, String>> shorten(@RequestBody Map<String, String> request) {
+    String url = request.get("originalUrl");
+    String shortCode = service.shortenUrl(url);
 
+    Map<String, String> response = new HashMap<>();
+    response.put("shortUrl", "http://localhost:8080/" + shortCode);
+
+    return ResponseEntity.ok(response);
+}
+
+    @SuppressWarnings({ "unused", "null" })
     @GetMapping("/{shortCode}")
     public ResponseEntity<Void> redirect(@PathVariable String shortCode) {
 

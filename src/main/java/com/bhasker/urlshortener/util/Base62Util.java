@@ -1,3 +1,4 @@
+package com.bhasker.urlshortener.util;
 public class Base62Util {
 
     private static final String BASE62 = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
