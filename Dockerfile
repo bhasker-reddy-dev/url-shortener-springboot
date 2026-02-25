@@ -1,20 +1,5 @@
-# Use an official Java runtime as a parent image
-FROM eclipse-temurin:17-jdk-jammy
-
-# Set the working directory inside the container
+FROM eclipse-temurin:17-jdk
 WORKDIR /app
-
-# Copy the Maven build files
-COPY pom.xml .
-COPY src ./src
-
-# Package the application (build inside container)
-RUN apt-get update && \
-    apt-get install -y maven && \
-    mvn clean package -DskipTests
-
-# Expose the port Spring Boot runs on
+COPY target/*.jar app.jar
 EXPOSE 8080
-
-# Run the application
-CMD ["java", "-jar", "target/urlshortener-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java","-jar","app.jar"]

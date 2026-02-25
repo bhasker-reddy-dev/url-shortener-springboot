@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000") 
+@CrossOrigin(origins = "*")
 public class UrlController {
 
     private final UrlService service;
@@ -17,30 +17,28 @@ public class UrlController {
     public UrlController(UrlService service) {
         this.service = service;
     }
-    @GetMapping("/")
-public String home() {
-    return "URL Shortener API is running! Use /shorten to create short URLs.";
-}
 
-  @PostMapping("/shorten")
-public ResponseEntity<Map<String, String>> shorten(@RequestParam String url) {
-    String shortCode = service.shortenUrl(url);
-    Map<String, String> result = new HashMap<>();
-    result.put("shortUrl", "https://url-shortener-springboot-1.onrender.com/" + shortCode);
-    return ResponseEntity.ok(result);
-}
+    // POST: /shorten?url=https://google.com
+    @PostMapping("/shorten")
+    public ResponseEntity<Map<String, String>> shorten(@RequestParam String url) {
+        String code = service.shortenUrl(url);
 
-    @SuppressWarnings({ "unused", "null" })
-    @GetMapping("/{shortCode}")
-    public ResponseEntity<Void> redirect(@PathVariable String shortCode) {
+        Map<String, String> res = new HashMap<>();
+        res.put("shortUrl", "https://url-shortener-springboot-1.onrender.com/" + code);
 
-        return service.getOriginalUrl(shortCode)
-                .map(originalUrl ->
-                        ResponseEntity
-                                .status(302)
-                                .location(URI.create(originalUrl))
-                                .<Void>build()
-                )
-                .orElse(ResponseEntity.<Void>notFound().build());
+        return ResponseEntity.ok(res);
+    }
+
+    // GET: /abc123 → redirect
+    @GetMapping("/{code}")
+    public ResponseEntity<?> redirect(@PathVariable String code) {
+        return service.getOriginalUrl(code)
+                .map(original -> {
+                    URI uri = URI.create(original);
+                    return ResponseEntity.status(302)
+                            .location(uri)
+                            .build();
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 }
