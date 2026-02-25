@@ -23,14 +23,11 @@ public String home() {
 }
 
   @PostMapping("/shorten")
-public ResponseEntity<Map<String, String>> shorten(@RequestBody Map<String, String> request) {
-    String url = request.get("originalUrl");
+public ResponseEntity<Map<String, String>> shorten(@RequestParam String url) {
     String shortCode = service.shortenUrl(url);
-
-    Map<String, String> response = new HashMap<>();
-    response.put("shortUrl", "http://localhost:8080/" + shortCode);
-
-    return ResponseEntity.ok(response);
+    Map<String, String> result = new HashMap<>();
+    result.put("shortUrl", "https://url-shortener-springboot-1.onrender.com/" + shortCode);
+    return ResponseEntity.ok(result);
 }
 
     @SuppressWarnings({ "unused", "null" })
