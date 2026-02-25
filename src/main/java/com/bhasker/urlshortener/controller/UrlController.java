@@ -17,6 +17,10 @@ public class UrlController {
     public UrlController(UrlService service) {
         this.service = service;
     }
+    @GetMapping("/")
+public String home() {
+    return "URL Shortener API is running! Use /shorten to create short URLs.";
+}
 
   @PostMapping("/shorten")
 public ResponseEntity<Map<String, String>> shorten(@RequestBody Map<String, String> request) {
