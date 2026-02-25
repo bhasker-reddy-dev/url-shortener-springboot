@@ -5,7 +5,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -19,13 +18,17 @@ public class UrlController {
     }
 
     // POST: /shorten?url=https://google.com
-   @PostMapping("/shorten")
+  @PostMapping("/shorten")
 public ResponseEntity<String> shorten(@RequestBody Map<String, String> body) {
+
     String originalUrl = body.get("url");
+
+    if (originalUrl == null || originalUrl.isBlank()) {
+        return ResponseEntity.badRequest().body("URL is required");
+    }
 
     String shortCode = service.shortenUrl(originalUrl);
 
-    // IMPORTANT: use deployed URL
     return ResponseEntity.ok(
         "https://url-shortener-springboot-1.onrender.com/" + shortCode
     );
