@@ -19,15 +19,17 @@ public class UrlController {
     }
 
     // POST: /shorten?url=https://google.com
-    @PostMapping("/shorten")
-    public ResponseEntity<Map<String, String>> shorten(@RequestParam String url) {
-        String code = service.shortenUrl(url);
+   @PostMapping("/shorten")
+public ResponseEntity<String> shorten(@RequestBody Map<String, String> body) {
+    String originalUrl = body.get("url");
 
-        Map<String, String> res = new HashMap<>();
-        res.put("shortUrl", "https://url-shortener-springboot-1.onrender.com/" + code);
+    String shortCode = service.shortenUrl(originalUrl);
 
-        return ResponseEntity.ok(res);
-    }
+    // IMPORTANT: use deployed URL
+    return ResponseEntity.ok(
+        "https://url-shortener-springboot-1.onrender.com/" + shortCode
+    );
+}
 
     // GET: /abc123 → redirect
     @GetMapping("/{code}")
